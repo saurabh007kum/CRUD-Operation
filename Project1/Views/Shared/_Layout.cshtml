@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body style="background:linear-gradient(32deg,green,aqua,red)">
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+    <script>
+        function GetRecordData() {
+            if ($('#inputEmail3').val() == '') {
+                alert('please enter your email')
+                return;
+            }
+            if ($('#inputPassword3').val() == '') {
+                alert('please enter your Password')
+                return;
+            }
+            var name = $('#inputName3').val()
+            var email = $('#inputEmail3').val()
+            var password = $('#inputPassword3').val()
+            var dob = $('#inputDate3').val()
+            var profile = $('#inputImage3')[0].files[0]
+            var gen = $("input[name='Gender']:checked").val()
+
+            var data = new FormData;
+            data.append("Username", name)
+            data.append("Email", email)
+            data.append("Password", password)
+            data.append("DOB", dob)
+            data.append("Gender", gen)
+            data.append("picture", profile)
+            data.append("action", 1)
+
+            $.ajax({
+                url: "Home/InsertUpdateStudent",
+                method: "post",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (result) {
+                    if (result == 1) {
+                        alert('Record Added Successfully')
+                        RefreshRecord()
+                    }
+                },
+                error: function (r) {
+                    alert('error')
+                }
+            })
+        }
+        function DeleteRecord(id)
+        {
+            var a = confirm("Are you sure want to delete the record??????")
+            if (a != null) {
+                var data1 = new FormData;
+                data1.append("User_id", id)
+                data1.append("action", 3)
+                $.ajax
+                    ({
+                        url: "Home/InsertUpdateStudent",
+                        method: "post",
+                        contentType: false,
+                        processData:false,
+                        data: data1,
+                        success: function (result) {
+                            if (result == 1) {
+                                alert('Record Deleted Successfully')
+                                RefreshRecord()
+                            }
+                        },
+                        error: function (r) {
+                            alert('error')
+                        }
+                })
+            }
+        }
+
+        function GetRecordForEdit(id)
+        {
+            alert(id)
+            if (id != null)
+            {
+            var ed = new FormData;
+                ed.append("User_id", id)
+                ed.append("action", 4)
+                $.ajax
+                ({
+                    url: "Home/GetRecordForEdit",
+                    method: "post",
+                    contentType: false,
+                    processData: false,
+                    data: ed,
+                    success: function (result)
+                    {
+                        if (result !=null)
+                        {
+                            $('#inputImage3').attr('src', result.Image);
+                            $('#inputName3').val(result.Username)
+                            $('#inputEmail3').val(result.Email)
+                            $('#inputPassword3').val(result.Password)
+                            $('#inputDate3').val(result.DOB)
+                            $("#input[name='Gender']").each(function ()
+                            {
+                                if ($(this).val() == result.Gender)
+                                {
+                                    $(this).attr('Checked', true)
+                                }
+                            })
+                            $("#btnsave").hide()
+                            $("#btnupdate").show()
+                            $('#id').val(result.User_id)
+                        }
+                    },
+
+                    error: function (r)
+                    {
+                        alert("error")
+                    }
+                })
+            }
+        }
+        $(document).ready(function () {
+            $('#btnsave').show();
+            $('#btnupdate').hide();
+
+        })
+        function UpdateRecord() {
+            
+            var name = $('#inputName3').val()
+            var email = $('#inputEmail3').val()
+            var password = $('#inputPassword3').val()
+            var dob = $('#inputDate3').val()
+            var profile = $('#inputImage3')[0].files[0]
+            var gen = $("input[name='Gender']:checked").val()
+
+            var fdata = new FormData;
+            fdata.append("Username", name)
+            fdata.append("Email", email)
+            fdata.append("Password", password)
+            fdata.append("DOB", dob)
+            fdata.append("Gender", gen)
+            fdata.append("picture", profile)
+            fdata.append("action", 5)
+            fdata.append("User_id", $('#id').val())
+
+            $.ajax({
+                url: "../Home/InsertUpdateStudent",
+                method: "post",
+                contentType: false,
+                processData: false,
+                data: fdata,
+                success: function (result) {
+                    if (result == 1) {
+                        alert('Record Added Successfully')
+                        RefreshRecord()
+                    }
+                },
+                error: function (r) {
+                    alert('error')
+                }
+            })
+        }
+        function RefreshRecord() {
+            $.ajax({
+                url: '/Home/AllStudent',
+                method: 'POST',
+                contentType: false,
+                processData: false,
+                success: function (r) {
+                    var newhtml = r
+                    $('#div').html($(newhtml).find('#div1'))
+                    $("#btnsave").hide()
+                    $("#btnupdate").show()
+                }
+            })
+        }
+    </script>
+    
+</body>
+</html>

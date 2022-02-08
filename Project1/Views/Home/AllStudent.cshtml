@@ -1,0 +1,106 @@
+﻿@model Project1.Models.Property
+@using System.Data;
+@{
+    ViewBag.Title = "AllStudent";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Student_List</h2>
+<input type="hidden"  id="id"/>
+<div class="row">
+    <div class="col-sm-5 ">
+        <div class="card ">
+            <div class="card-body bg-warning">
+                <div class="row mb-2">
+                    <label for="inputName3" class="col-sm-3 col-form-label">Name</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inputName3" name="Username">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control" id="inputEmail3" name="Email">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="inputPassword3" class="col-sm-3 col-form-label">Password</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" id="inputPassword3" name="Password">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="inputDate3" class="col-sm-3 col-form-label">DOB</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control" id="inputDate3" name="DOB">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="inputImage3" class="col-sm-3 col-form-label">Profile</label>
+                    <div class="col-sm-9">
+                        <input type="file" class="form-control" id="inputImage3" name="picture">
+                        <img src="~/Content/img/download.jpg" id="imgid" class="fa fa-image" style="width:60px; height:50px;" />
+                    </div>
+                </div>
+                <fieldset class="row mb-2">
+                    <legend class="col-form-label col-sm-2 pt-0">Gender</legend>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" onchange=" " type="radio" name="Gender" id="gridGender1" value="Male" checked>
+                            <label class="form-check-label" for="gridGender1">
+                                Male
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Gender" id="gridGender2" value="Female">
+                            <label class="form-check-label" for="gridGender2">
+                                Female
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                <input type="button" onclick="GetRecordData()" id="btnsave" class="btn btn-primary" value="Sign_In" />
+                <input type="button" onclick="UpdateRecord()" id="btnupdate" class="btn btn-outline-dark" value="Update" />
+            </div>
+
+        </div>
+    
+    </div>
+    <div class="col-sm-7" id="div">
+        <table class="table table-success table-striped" id="div1">
+             
+            <tr>
+                <th>Sr_No</th>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>DOB</th>
+                <th>Gender</th>
+                <th>Picture</th>
+                <th>Action</th>
+
+            </tr>
+            @if (Model.dt != null && Model.dt.Rows.Count > 0)
+            {
+                int i=0;
+                foreach (DataRow item in Model.dt.Rows)
+                {
+                    i++;
+                    <tr>
+                        <th scope="row">@i</th>
+                        <td>@item["username"]</td>
+                        <td>@item["email"]</td>
+                        <td>@item["password"]</td>
+                        <td>@item["dob"]</td>
+                        <td>@item["gender"]</td>
+                        <td><img src="~/Content/uimg/@item["image"]" style="width:50px; height:50px;" /></td>
+                        <td><a href="#" onclick="DeleteRecord('@item["usr_id"]')">Delete</a>
+                        <a href="#" onclick="GetRecordForEdit('@item["usr_id"]')">Edit</a></td>
+
+                    </tr>
+                }
+            }
+        </table>
+
+    </div>
+</div>
